@@ -1,6 +1,6 @@
 package com.allegroservice.service;
 
-import com.allegroservice.model.TokenResponse;
+import com.allegroservice.dto.TokenResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Base64;
 
 @Service
-public class TokenService {
+public class AuthorizationService {
 
     @Value("${allegro.client-id}")
     private String clientId;
@@ -21,8 +21,15 @@ public class TokenService {
 
     private final WebClient webClient;
 
-    public TokenService(WebClient.Builder webClientBuilder) {
+    public AuthorizationService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("https://allegro.pl").build();
+    }
+
+    public String generateAuthorizationUrl() {
+        return "https://allegro.pl/auth/oauth/authorize" +
+                "?response_type=code" +
+                "&client_id=" + clientId +
+                "&redirect_uri=" + redirectUri;
     }
 
     public TokenResponse fetchAccessToken() {
@@ -62,5 +69,4 @@ public class TokenService {
             throw new RuntimeException("Error exchanging authorization code: " + e.getMessage(), e);
         }
     }
-
 }
