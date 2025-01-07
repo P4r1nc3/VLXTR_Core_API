@@ -1,4 +1,4 @@
-package com.allegroservice.model;
+package com.allegroservice.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

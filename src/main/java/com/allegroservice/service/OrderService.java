@@ -1,7 +1,7 @@
 package com.allegroservice.service;
 
-import com.allegroservice.model.OrderResponse;
-import com.allegroservice.model.TokenResponse;
+import com.allegroservice.dto.OrderResponse;
+import com.allegroservice.dto.TokenResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

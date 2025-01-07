@@ -1,6 +1,6 @@
 package com.allegroservice.controller;
 
-import com.allegroservice.model.TokenResponse;
+import com.allegroservice.dto.TokenResponse;
 import com.allegroservice.service.AuthorizationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

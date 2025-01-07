@@ -1,6 +1,6 @@
 package com.allegroservice.controller;
 
-import com.allegroservice.model.OffersResponse;
+import com.allegroservice.dto.OffersResponse;
 import com.allegroservice.service.OffersService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
