@@ -23,6 +23,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/orders/**").permitAll()
                         .requestMatchers("/test/**").permitAll()
+                        .requestMatchers("/token/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
