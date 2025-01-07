@@ -12,17 +12,10 @@ import java.util.List;
 @RestController
 public class OrderController {
 
-    private final TokenService tokenService;
     private final OrderService orderService;
 
-    public OrderController(TokenService tokenService, OrderService orderService) {
-        this.tokenService = tokenService;
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
-    }
-
-    @GetMapping("/token")
-    public ResponseEntity<?> getToken() {
-        return ResponseEntity.ok(tokenService.fetchAccessToken());
     }
 
     @GetMapping("/orders")

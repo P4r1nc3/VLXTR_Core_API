@@ -16,6 +16,9 @@ public class TokenService {
     @Value("${allegro.client-secret}")
     private String clientSecret;
 
+    @Value("${allegro.redirect-uri}")
+    private String redirectUri;
+
     private final WebClient webClient;
 
     public TokenService(WebClient.Builder webClientBuilder) {
@@ -40,4 +43,24 @@ public class TokenService {
             throw new RuntimeException("Error fetching token: " + e.getMessage(), e);
         }
     }
+
+    public TokenResponse exchangeAuthorizationCodeForToken(String authorizationCode) {
+        try {
+            String credentials = clientId + ":" + clientSecret;
+            String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes());
+
+            return webClient.post()
+                    .uri("/auth/oauth/token")
+                    .header("Authorization", "Basic " + encodedCredentials)
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .bodyValue("grant_type=authorization_code&code=" + authorizationCode + "&redirect_uri=" + redirectUri)
+                    .retrieve()
+                    .bodyToMono(TokenResponse.class)
+                    .block();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error exchanging authorization code: " + e.getMessage(), e);
+        }
+    }
+
 }
