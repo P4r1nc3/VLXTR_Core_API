@@ -1,9 +1,7 @@
 package com.allegroservice.controller;
 
 import com.allegroservice.model.TokenResponse;
-import com.allegroservice.service.OrderService;
 import com.allegroservice.service.TokenService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,12 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthorizationController {
-
-    @Value("${allegro.client-id}")
-    private String clientId;
-
-    @Value("${allegro.redirect-uri}")
-    private String redirectUri;
 
     private final TokenService tokenService;
 
@@ -31,11 +23,7 @@ public class AuthorizationController {
 
     @GetMapping("/auth-link")
     public ResponseEntity<String> generateAuthorizationLink() {
-        String authUrl = "https://allegro.pl/auth/oauth/authorize" +
-                "?response_type=code" +
-                "&client_id=" + clientId +
-                "&redirect_uri=" + redirectUri;
-        return ResponseEntity.ok(authUrl);
+        return ResponseEntity.ok(tokenService.generateAuthorizationUrl());
     }
 
     @GetMapping("/token")

@@ -25,6 +25,13 @@ public class TokenService {
         this.webClient = webClientBuilder.baseUrl("https://allegro.pl").build();
     }
 
+    public String generateAuthorizationUrl() {
+        return "https://allegro.pl/auth/oauth/authorize" +
+                "?response_type=code" +
+                "&client_id=" + clientId +
+                "&redirect_uri=" + redirectUri;
+    }
+
     public TokenResponse fetchAccessToken() {
         try {
             String credentials = clientId + ":" + clientSecret;
@@ -62,5 +69,4 @@ public class TokenService {
             throw new RuntimeException("Error exchanging authorization code: " + e.getMessage(), e);
         }
     }
-
 }
