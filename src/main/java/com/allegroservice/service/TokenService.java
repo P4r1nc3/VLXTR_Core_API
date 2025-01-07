@@ -1,5 +1,6 @@
 package com.allegroservice.service;
 
+import com.allegroservice.model.TokenResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,7 +22,7 @@ public class TokenService {
         this.webClient = webClientBuilder.baseUrl("https://allegro.pl").build();
     }
 
-    public String fetchAccessToken() {
+    public TokenResponse fetchAccessToken() {
         try {
             // Kodowanie clientId:clientSecret w Base64
             String credentials = clientId + ":" + clientSecret;
@@ -34,11 +35,11 @@ public class TokenService {
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .bodyValue("grant_type=client_credentials")
                     .retrieve()
-                    .bodyToMono(String.class) // Pobieranie odpowiedzi jako String (JSON)
+                    .bodyToMono(TokenResponse.class) // Mapowanie odpowiedzi JSON na TokenResponse
                     .block(); // Blokowanie dla synchronizacji
 
         } catch (Exception e) {
-            return "Error fetching token: " + e.getMessage();
+            throw new RuntimeException("Error fetching token: " + e.getMessage(), e);
         }
     }
 }
