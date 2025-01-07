@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Base64;
 
 @Service
-public class TokenService {
+public class AuthorizationService {
 
     @Value("${allegro.client-id}")
     private String clientId;
@@ -21,7 +21,7 @@ public class TokenService {
 
     private final WebClient webClient;
 
-    public TokenService(WebClient.Builder webClientBuilder) {
+    public AuthorizationService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("https://allegro.pl").build();
     }
 
