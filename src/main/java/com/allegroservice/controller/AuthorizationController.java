@@ -25,21 +25,21 @@ public class AuthorizationController {
     }
 
     @GetMapping()
-    public TokenResponse handleAuthorizationCallback(@RequestParam("code") String authorizationCode) {
-        return tokenService.exchangeAuthorizationCodeForToken(authorizationCode);
+    public ResponseEntity<TokenResponse> handleAuthorizationCallback(@RequestParam("code") String authorizationCode) {
+        return ResponseEntity.ok(tokenService.exchangeAuthorizationCodeForToken(authorizationCode));
     }
 
     @GetMapping("/auth-link")
-    public String generateAuthorizationLink() {
+    public ResponseEntity<String> generateAuthorizationLink() {
         String authUrl = "https://allegro.pl/auth/oauth/authorize" +
                 "?response_type=code" +
                 "&client_id=" + clientId +
                 "&redirect_uri=" + redirectUri;
-        return authUrl;
+        return ResponseEntity.ok(authUrl);
     }
 
     @GetMapping("/token")
-    public ResponseEntity<?> getToken() {
+    public ResponseEntity<TokenResponse> getToken() {
         return ResponseEntity.ok(tokenService.fetchAccessToken());
     }
 }
