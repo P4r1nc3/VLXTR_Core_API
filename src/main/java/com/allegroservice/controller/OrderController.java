@@ -22,9 +22,4 @@ public class OrderController {
         List<OrderResponse> orders = orderService.fetchOrders();
         return ResponseEntity.ok(orders);
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("test");
-    }
 }
