@@ -20,7 +20,7 @@ public class GoogleDriveConfig {
     @Bean
     public Drive googleDrive() throws IOException {
         InputStream credentialsStream = getClass().getClassLoader()
-                .getResourceAsStream("allegro-service-447208-0fe7d9012130.json");
+                .getResourceAsStream(credentialsFileName);
 
         if (credentialsStream == null) {
             throw new IOException("Could not find the credentials file in resources.");
