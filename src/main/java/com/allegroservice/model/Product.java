@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "auctions")
-public class Auction {
+@Table(name = "products")
+public class Product {
 
     @Id
     private Long id;
