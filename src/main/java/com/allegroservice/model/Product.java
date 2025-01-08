@@ -32,4 +32,7 @@ public class Product {
 
     @Column(name = "google_drive_link", nullable = false)
     private String googleDriveLink; // Link to the Google Drive file
+
+    @Column(name = "is_valid", nullable = false)
+    private Boolean isValid = true;
 }
