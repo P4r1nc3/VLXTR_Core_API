@@ -4,6 +4,7 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,9 +14,11 @@ import java.io.InputStream;
 @Configuration
 public class GoogleDriveConfig {
 
+    @Value("${google.credentials-file-name}")
+    private String credentialsFileName;
+
     @Bean
     public Drive googleDrive() throws IOException {
-        // Load the credentials file from the classpath
         InputStream credentialsStream = getClass().getClassLoader()
                 .getResourceAsStream("allegro-service-447208-0fe7d9012130.json");
 
