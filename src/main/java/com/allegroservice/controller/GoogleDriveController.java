@@ -3,6 +3,7 @@ package com.allegroservice.controller;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,9 +14,11 @@ import java.util.stream.Collectors;
 @RestController
 public class GoogleDriveController {
 
+    @Value("${google.folder-id}")
+    private String folderId;
+
     private final Drive googleDrive;
 
-    private final String folderId = "14RMqM37hTo9o9M1sriGDtVn4RnWzd-ag";
 
     public GoogleDriveController(Drive googleDrive) {
         this.googleDrive = googleDrive;
