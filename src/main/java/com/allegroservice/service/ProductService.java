@@ -1,9 +1,6 @@
 package com.allegroservice.service;
 
-import com.allegroservice.service.AllegroService;
-import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 import com.allegroservice.dto.allegro.OffersResponse;
 import com.allegroservice.model.Product;
 import com.allegroservice.repository.ProductRepository;
@@ -16,14 +13,15 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-    private final ProductRepository productRepository;
     private final AllegroService allegroService;
-    private final Drive googleDrive; // Inject Google Drive service
+    private final GoogleDriveService googleDriveService;
+    private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository, AllegroService allegroService, Drive googleDrive) {
-        this.productRepository = productRepository;
+
+    public ProductService(AllegroService allegroService, GoogleDriveService googleDriveService, ProductRepository productRepository) {
         this.allegroService = allegroService;
-        this.googleDrive = googleDrive;
+        this.googleDriveService = googleDriveService;
+        this.productRepository = productRepository;
     }
 
     public List<Product> populateProducts(String bearerToken) {
@@ -31,7 +29,7 @@ public class ProductService {
         OffersResponse offersResponse = allegroService.fetchOffers(bearerToken);
 
         // Fetch files from Google Drive
-        List<File> googleFiles = fetchGoogleDriveFiles();
+        List<File> googleFiles = googleDriveService.fetchGoogleDriveFiles();
 
         List<Product> products = new ArrayList<>();
         for (OffersResponse.Offer offer : offersResponse.getOffers()) {
@@ -102,14 +100,5 @@ public class ProductService {
         }
 
         return products;
-    }
-
-    private List<File> fetchGoogleDriveFiles() {
-        try {
-            FileList result = googleDrive.files().list().execute();
-            return result.getFiles();
-        } catch (Exception e) {
-            throw new RuntimeException("Error fetching files from Google Drive: " + e.getMessage(), e);
-        }
     }
 }
