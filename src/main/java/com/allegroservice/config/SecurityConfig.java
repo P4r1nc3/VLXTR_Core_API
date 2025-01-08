@@ -25,6 +25,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/google/**").permitAll()
                         .requestMatchers("/allegro/**").permitAll()
+                        .requestMatchers("/products/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
