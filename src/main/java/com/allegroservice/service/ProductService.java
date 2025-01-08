@@ -1,5 +1,9 @@
 package com.allegroservice.service;
 
+import com.allegroservice.service.AllegroService;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 import com.allegroservice.dto.allegro.OffersResponse;
 import com.allegroservice.model.Product;
 import com.allegroservice.repository.ProductRepository;
@@ -7,21 +11,27 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final AllegroService allegroService;
+    private final Drive googleDrive; // Inject Google Drive service
 
-    public ProductService(ProductRepository productRepository, AllegroService allegroService) {
+    public ProductService(ProductRepository productRepository, AllegroService allegroService, Drive googleDrive) {
         this.productRepository = productRepository;
         this.allegroService = allegroService;
+        this.googleDrive = googleDrive;
     }
 
     public List<Product> populateProducts(String bearerToken) {
         // Fetch offers from Allegro
         OffersResponse offersResponse = allegroService.fetchOffers(bearerToken);
+
+        // Fetch files from Google Drive
+        List<File> googleFiles = fetchGoogleDriveFiles();
 
         List<Product> products = new ArrayList<>();
         for (OffersResponse.Offer offer : offersResponse.getOffers()) {
@@ -65,6 +75,17 @@ public class ProductService {
                 productModel = "UNKNOWN_MODEL";
             }
 
+            // Final copy of productModel for use in lambda expression
+            final String finalProductModel = productModel;
+
+            // Find the matching file in Google Drive
+            Optional<File> matchingFile = googleFiles.stream()
+                    .filter(file -> file.getName().startsWith(finalProductModel + ".") || file.getName().equals(finalProductModel))
+                    .findFirst();
+
+            String googleDriveId = matchingFile.map(File::getId).orElse("UNKNOWN_FILE_ID");
+            String googleDriveLink = "https://drive.google.com/file/d/" + googleDriveId + "/view";
+
             // Map fields to Product entity
             Product product = new Product();
             product.setProductId(productModel); // Use the productModel as the productId
@@ -73,13 +94,22 @@ public class ProductService {
             product.setProductPrice(Double.valueOf(fullOffer.getSellingMode().getPrice().getAmount()));
             product.setAllegroOfferId(fullOffer.getId());
             product.setAllegroOfferLink("https://allegro.pl/oferta/" + fullOffer.getId());
-            product.setGoogleDriveId("dummyGoogleDriveId"); // Placeholder
-            product.setGoogleDriveLink("https://drive.google.com/file/d/dummyGoogleDriveId/view"); // Placeholder
+            product.setGoogleDriveId(googleDriveId);
+            product.setGoogleDriveLink(googleDriveLink);
 
             // Save to database
             products.add(productRepository.save(product));
         }
 
         return products;
+    }
+
+    private List<File> fetchGoogleDriveFiles() {
+        try {
+            FileList result = googleDrive.files().list().execute();
+            return result.getFiles();
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching files from Google Drive: " + e.getMessage(), e);
+        }
     }
 }
