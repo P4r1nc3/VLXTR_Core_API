@@ -27,16 +27,13 @@ public class GoogleDriveController {
     @GetMapping("/folder")
     public ResponseEntity<List<File>> listFolderContents() {
         try {
-            FileList result = googleDrive.files().list()
-                    .setQ("'" + folderId + "' in parents and trashed = false")
-                    .setFields("files(id, name, mimeType)")
-                    .execute();
+            FileList result = googleDrive.files().list().execute();
 
             List<File> files = result.getFiles();
 
             return ResponseEntity.ok(files);
         } catch (IOException e) {
-            throw new RuntimeException("Błąd podczas pobierania zawartości folderu: " + e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 }
