@@ -1,6 +1,6 @@
 package com.allegroservice.service;
 
-import com.allegroservice.dto.OffersResponse;
+import com.allegroservice.dto.allegro.OffersResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

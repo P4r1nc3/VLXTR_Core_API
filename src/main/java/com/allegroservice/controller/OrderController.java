@@ -1,6 +1,6 @@
 package com.allegroservice.controller;
 
-import com.allegroservice.dto.OrderResponse;
+import com.allegroservice.dto.allegro.OrderResponse;
 import com.allegroservice.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
