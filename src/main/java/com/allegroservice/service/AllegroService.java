@@ -1,15 +1,15 @@
 package com.allegroservice.service;
 
-import com.allegroservice.dto.OffersResponse;
+import com.allegroservice.dto.allegro.OffersResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
-public class OffersService {
+public class AllegroService {
 
     private final WebClient webClient;
 
-    public OffersService(WebClient.Builder webClientBuilder) {
+    public AllegroService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("https://api.allegro.pl").build();
     }
 
