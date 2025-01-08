@@ -5,9 +5,11 @@ import com.allegroservice.service.OffersService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/allegro")
 public class OffersController {
 
     private final OffersService offersService;
@@ -18,11 +20,7 @@ public class OffersController {
 
     @GetMapping("/offers")
     public ResponseEntity<OffersResponse> getOffers(@RequestHeader("Authorization") String bearerToken) {
-        try {
-            OffersResponse offersResponse = offersService.fetchOffers(bearerToken);
-            return ResponseEntity.ok(offersResponse);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+        OffersResponse offersResponse = offersService.fetchOffers(bearerToken);
+        return ResponseEntity.ok(offersResponse);
     }
 }

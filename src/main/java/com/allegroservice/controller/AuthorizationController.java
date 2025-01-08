@@ -4,10 +4,12 @@ import com.allegroservice.dto.allegro.TokenResponse;
 import com.allegroservice.service.AuthorizationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/auth")
 public class AuthorizationController {
 
     private final AuthorizationService authorizationService;
@@ -16,17 +18,17 @@ public class AuthorizationController {
         this.authorizationService = authorizationService;
     }
 
-    @GetMapping()
+    @GetMapping("/user/callback")
     public ResponseEntity<TokenResponse> handleAuthorizationCallback(@RequestParam("code") String authorizationCode) {
         return ResponseEntity.ok(authorizationService.exchangeAuthorizationCodeForToken(authorizationCode));
     }
 
-    @GetMapping("/auth-link")
+    @GetMapping("/user/link")
     public ResponseEntity<String> generateAuthorizationLink() {
         return ResponseEntity.ok(authorizationService.generateAuthorizationUrl());
     }
 
-    @GetMapping("/token")
+    @GetMapping("/device/token")
     public ResponseEntity<TokenResponse> getToken() {
         return ResponseEntity.ok(authorizationService.fetchAccessToken());
     }
