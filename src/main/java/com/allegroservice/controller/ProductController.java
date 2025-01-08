@@ -21,7 +21,7 @@ public class ProductController {
 
     @GetMapping("/populate")
     public ResponseEntity<List<Product>> populateProducts(@RequestHeader("Authorization") String bearerToken) {
-        List<Product> products = productService.populateProductsFromAllegro(bearerToken);
+        List<Product> products = productService.populateProducts(bearerToken);
         return ResponseEntity.ok(products);
     }
 }
