@@ -3,10 +3,7 @@ package com.allegroservice.controller;
 import com.allegroservice.model.Product;
 import com.allegroservice.service.ProductService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,6 +14,19 @@ public class ProductController {
 
     public ProductController(ProductService productService) {
         this.productService = productService;
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<Product>> getProducts() {
+        List<Product> products = productService.getProducts();
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{productId}")
+    public ResponseEntity<Product> getProductByAllegroOfferId(@PathVariable String productId) {
+        System.out.println("test");
+        Product product = productService.getProductByAllegroOfferId(productId);
+        return ResponseEntity.ok(product);
     }
 
     @GetMapping("/populate")
