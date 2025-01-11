@@ -4,6 +4,7 @@ import com.google.api.services.drive.model.File;
 import com.allegroservice.dto.allegro.OffersResponse;
 import com.allegroservice.model.Product;
 import com.allegroservice.repository.ProductRepository;
+import com.allegroservice.validators.ProductValidator;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +17,14 @@ public class ProductService {
     private final AllegroService allegroService;
     private final GoogleDriveService googleDriveService;
     private final ProductRepository productRepository;
+    private final ProductValidator productValidator;
 
-
-    public ProductService(AllegroService allegroService, GoogleDriveService googleDriveService, ProductRepository productRepository) {
+    public ProductService(AllegroService allegroService, GoogleDriveService googleDriveService,
+                          ProductRepository productRepository, ProductValidator productValidator) {
         this.allegroService = allegroService;
         this.googleDriveService = googleDriveService;
         this.productRepository = productRepository;
+        this.productValidator = productValidator;
     }
 
     public List<Product> getProducts() {
@@ -29,10 +32,7 @@ public class ProductService {
     }
 
     public Product getProductByAllegroOfferId(String allegroOfferId) {
-        // Retrieve product by allegroOfferId
         Optional<Product> product = productRepository.findByAllegroOfferId(allegroOfferId);
-
-        // Return the product if found, otherwise throw an exception
         return product.orElseThrow(() -> new EntityNotFoundException("Product with allegroOfferId: " + allegroOfferId + " not found"));
     }
 
@@ -50,7 +50,6 @@ public class ProductService {
                 .toList();
     }
 
-    // Processes a single offer and maps it to a Product entity
     private Product processOffer(String bearerToken, OffersResponse.Offer offer, List<File> googleFiles) {
         // Fetch full offer details
         OffersResponse.Offer fullOffer = allegroService.fetchOffer(bearerToken, offer.getId());
@@ -67,7 +66,6 @@ public class ProductService {
         return buildProductEntity(fullOffer, productModel, productColour, googleDriveId, googleDriveLink);
     }
 
-    // Extracts the product model from the offer details
     private String extractProductModel(OffersResponse.Offer fullOffer) {
         if (fullOffer.getProductSet() != null && !fullOffer.getProductSet().isEmpty()) {
             OffersResponse.Offer.ProductSet productSet = fullOffer.getProductSet().get(0);
@@ -82,7 +80,6 @@ public class ProductService {
         return "UNKNOWN_MODEL";
     }
 
-    // Determines the product colour based on the product model
     private String extractProductColour(String productModel) {
         if (productModel != null && productModel.contains("-")) {
             char lastChar = productModel.charAt(productModel.length() - 1);
@@ -90,13 +87,12 @@ public class ProductService {
                 case 'W' -> "White";
                 case 'B' -> "Black";
                 case 'G' -> "Grey";
-                default -> "Unknown";
+                default -> "UNKNOWN_COLOUR";
             };
         }
-        return "Unknown";
+        return "UNKNOWN_COLOUR";
     }
 
-    // Finds the Google Drive file ID for the given product model
     private String findGoogleDriveId(List<File> googleFiles, String productModel) {
         return googleFiles.stream()
                 .filter(file -> file.getName().startsWith(productModel + ".") || file.getName().equals(productModel))
@@ -105,8 +101,6 @@ public class ProductService {
                 .orElse("UNKNOWN_FILE_ID");
     }
 
-
-    // Maps the offer details to a Product entity
     private Product buildProductEntity(OffersResponse.Offer fullOffer, String productModel, String productColour,
                                        String googleDriveId, String googleDriveLink) {
         Product product = new Product();
@@ -118,6 +112,7 @@ public class ProductService {
         product.setAllegroOfferLink("https://allegro.pl/oferta/" + fullOffer.getId());
         product.setGoogleDriveId(googleDriveId);
         product.setGoogleDriveLink(googleDriveLink);
+        product.setIsValid(productValidator.isValid(product));
         return product;
     }
 }
