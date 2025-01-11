@@ -4,6 +4,7 @@ import com.google.api.services.drive.model.File;
 import com.allegroservice.dto.allegro.OffersResponse;
 import com.allegroservice.model.Product;
 import com.allegroservice.repository.ProductRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +23,18 @@ public class ProductService {
         this.allegroService = allegroService;
         this.googleDriveService = googleDriveService;
         this.productRepository = productRepository;
+    }
+
+    public List<Product> getProducts() {
+        return productRepository.findAll();
+    }
+
+    public Product getProductByAllegroOfferId(String allegroOfferId) {
+        // Retrieve product by allegroOfferId
+        Optional<Product> product = productRepository.findByAllegroOfferId(allegroOfferId);
+
+        // Return the product if found, otherwise throw an exception
+        return product.orElseThrow(() -> new EntityNotFoundException("Product with allegroOfferId: " + allegroOfferId + " not found"));
     }
 
     public List<Product> populateProducts(String bearerToken) {
