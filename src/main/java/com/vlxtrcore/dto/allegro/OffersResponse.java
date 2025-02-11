@@ -1,4 +1,4 @@
-package com.allegroservice.dto.allegro;
+package com.vlxtrcore.dto.allegro;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

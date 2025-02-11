@@ -1,4 +1,4 @@
-package com.allegroservice.service;
+package com.vlxtrcore.service;
 
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;

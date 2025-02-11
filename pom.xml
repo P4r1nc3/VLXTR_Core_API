@@ -8,11 +8,11 @@
 		<version>3.4.1</version>
 		<relativePath/>
 	</parent>
-	<groupId>com.allegroservice</groupId>
-	<artifactId>Allegro-Service</artifactId>
+	<groupId>com.vlxtrcore</groupId>
+	<artifactId>vlxtrcore</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Allegro-Service</name>
-	<description>Demo project for Allegro Service</description>
+	<name>VLXTR Core</name>
+	<description>Core project of VLXTR application</description>
 	<url/>
 	<licenses>
 		<license/>

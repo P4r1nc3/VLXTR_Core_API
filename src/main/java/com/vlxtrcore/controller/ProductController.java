@@ -1,7 +1,7 @@
-package com.allegroservice.controller;
+package com.vlxtrcore.controller;
 
-import com.allegroservice.model.Product;
-import com.allegroservice.service.ProductService;
+import com.vlxtrcore.model.Product;
+import com.vlxtrcore.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

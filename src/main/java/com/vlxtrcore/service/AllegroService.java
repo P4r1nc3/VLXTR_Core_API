@@ -1,6 +1,6 @@
-package com.allegroservice.service;
+package com.vlxtrcore.service;
 
-import com.allegroservice.dto.allegro.OffersResponse;
+import com.vlxtrcore.dto.allegro.OffersResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

@@ -1,6 +1,6 @@
-package com.allegroservice.validators;
+package com.vlxtrcore.validators;
 
-import com.allegroservice.model.Product;
+import com.vlxtrcore.model.Product;
 import org.springframework.stereotype.Service;
 
 @Service

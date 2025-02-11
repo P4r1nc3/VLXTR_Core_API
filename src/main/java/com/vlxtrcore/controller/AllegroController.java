@@ -1,7 +1,7 @@
-package com.allegroservice.controller;
+package com.vlxtrcore.controller;
 
-import com.allegroservice.dto.allegro.OffersResponse;
-import com.allegroservice.service.AllegroService;
+import com.vlxtrcore.dto.allegro.OffersResponse;
+import com.vlxtrcore.service.AllegroService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

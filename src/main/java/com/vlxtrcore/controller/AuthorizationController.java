@@ -1,7 +1,7 @@
-package com.allegroservice.controller;
+package com.vlxtrcore.controller;
 
-import com.allegroservice.dto.allegro.TokenResponse;
-import com.allegroservice.service.AuthorizationService;
+import com.vlxtrcore.dto.allegro.TokenResponse;
+import com.vlxtrcore.service.AuthorizationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

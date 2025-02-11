@@ -1,4 +1,4 @@
-package com.allegroservice.model;
+package com.vlxtrcore.model;
 
 import jakarta.persistence.*;
 import lombok.Data;

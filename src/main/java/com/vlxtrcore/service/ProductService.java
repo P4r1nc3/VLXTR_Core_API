@@ -1,10 +1,10 @@
-package com.allegroservice.service;
+package com.vlxtrcore.service;
 
 import com.google.api.services.drive.model.File;
-import com.allegroservice.dto.allegro.OffersResponse;
-import com.allegroservice.model.Product;
-import com.allegroservice.repository.ProductRepository;
-import com.allegroservice.validators.ProductValidator;
+import com.vlxtrcore.dto.allegro.OffersResponse;
+import com.vlxtrcore.model.Product;
+import com.vlxtrcore.repository.ProductRepository;
+import com.vlxtrcore.validators.ProductValidator;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
