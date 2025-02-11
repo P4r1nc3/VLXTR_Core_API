@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.4.1</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>com.allegroservice</groupId>
 	<artifactId>Allegro-Service</artifactId>
@@ -29,6 +29,12 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+	<repositories>
+		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/P4r1nc3/VLXTR_API_Clients</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -98,6 +104,16 @@
 			<groupId>com.google.http-client</groupId>
 			<artifactId>google-http-client-jackson2</artifactId>
 			<version>1.42.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.p4r1nc3.vlxtr</groupId>
+			<artifactId>vlxtr-allegro-api</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.p4r1nc3.vlxtr</groupId>
+			<artifactId>vlxtr-bambu-api</artifactId>
+			<version>1.0.7</version>
 		</dependency>
 	</dependencies>
 
