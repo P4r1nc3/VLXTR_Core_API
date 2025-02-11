@@ -13,6 +13,7 @@ public class AllegroService {
         this.webClient = webClientBuilder.baseUrl("https://api.allegro.pl").build();
     }
 
+    // Fetch all offers
     public OffersResponse fetchOffers(String bearerToken) {
         try {
             return webClient.get()
@@ -24,6 +25,23 @@ public class AllegroService {
                     .block();
         } catch (Exception e) {
             throw new RuntimeException("Error fetching offers: " + e.getMessage(), e);
+        }
+    }
+
+    // Fetch a specific offer by offerId
+    public OffersResponse.Offer fetchOffer(String bearerToken, String offerId) {
+        try {
+            return webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/sale/product-offers/{offerId}")
+                            .build(offerId))
+                    .header("Authorization", bearerToken)
+                    .header("Accept", "application/vnd.allegro.public.v1+json")
+                    .retrieve()
+                    .bodyToMono(OffersResponse.Offer.class) // Fetching a single offer object
+                    .block();
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching offer with ID " + offerId + ": " + e.getMessage(), e);
         }
     }
 }

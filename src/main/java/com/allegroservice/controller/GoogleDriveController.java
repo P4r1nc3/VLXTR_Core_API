@@ -1,8 +1,7 @@
 package com.allegroservice.controller;
 
-import com.google.api.services.drive.Drive;
+import com.allegroservice.service.GoogleDriveService;
 import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,17 +18,16 @@ public class GoogleDriveController {
     @Value("${google.folder-id}")
     private String folderId;
 
-    private final Drive googleDrive;
+    private final GoogleDriveService googleDriveService;
 
 
-    public GoogleDriveController(Drive googleDrive) {
-        this.googleDrive = googleDrive;
+    public GoogleDriveController(GoogleDriveService googleDriveService) {
+        this.googleDriveService = googleDriveService;
     }
 
     @GetMapping("/files")
     public ResponseEntity<List<File>> listFolderContents() throws IOException {
-        FileList result = googleDrive.files().list().execute();
-        List<File> files = result.getFiles();
+        List<File> files = googleDriveService.fetchGoogleDriveFiles();
         return ResponseEntity.ok(files);
     }
 }
