@@ -22,9 +22,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("*").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/google/**").permitAll()
-                        .requestMatchers("/allegro/**").permitAll()
                         .requestMatchers("/products/**").permitAll()
                         .anyRequest().authenticated()
                 );
