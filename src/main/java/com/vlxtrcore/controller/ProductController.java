@@ -24,7 +24,6 @@ public class ProductController {
 
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductByAllegroOfferId(@PathVariable String productId) {
-        System.out.println("test");
         Product product = productService.getProductByAllegroOfferId(productId);
         return ResponseEntity.ok(product);
     }
