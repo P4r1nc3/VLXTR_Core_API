@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.1</version>
+		<version>3.4.2</version>
 		<relativePath/>
 	</parent>
-	<groupId>com.allegroservice</groupId>
-	<artifactId>Allegro-Service</artifactId>
+	<groupId>com.vlxtrcore</groupId>
+	<artifactId>VLXTR-Core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Allegro-Service</name>
-	<description>Demo project for Allegro Service</description>
+	<name>VLXTR-Core</name>
+	<description>Core project of VLXTR application</description>
 	<url/>
 	<licenses>
 		<license/>

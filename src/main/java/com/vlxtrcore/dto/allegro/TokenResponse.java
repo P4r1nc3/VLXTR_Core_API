@@ -1,4 +1,4 @@
-package com.allegroservice.dto.allegro;
+package com.vlxtrcore.dto.allegro;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

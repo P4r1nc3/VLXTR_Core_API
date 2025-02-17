@@ -1,13 +1,13 @@
-package com.allegroservice;
+package com.vlxtrcore;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AllegroServiceApplication {
+public class VlxtrCoreApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AllegroServiceApplication.class, args);
+		SpringApplication.run(VlxtrCoreApplication.class, args);
 	}
 
 }

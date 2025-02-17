@@ -1,4 +1,4 @@
-package com.allegroservice.config;
+package com.vlxtrcore.config;
 
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;

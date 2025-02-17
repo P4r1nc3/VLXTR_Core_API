@@ -1,4 +1,4 @@
-package com.allegroservice.config;
+package com.vlxtrcore.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

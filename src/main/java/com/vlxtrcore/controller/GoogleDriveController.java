@@ -1,6 +1,6 @@
-package com.allegroservice.controller;
+package com.vlxtrcore.controller;
 
-import com.allegroservice.service.GoogleDriveService;
+import com.vlxtrcore.service.GoogleDriveService;
 import com.google.api.services.drive.model.File;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
