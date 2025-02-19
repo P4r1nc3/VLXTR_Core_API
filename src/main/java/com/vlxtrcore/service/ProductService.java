@@ -1,7 +1,6 @@
 package com.vlxtrcore.service;
 
 import com.google.api.services.drive.model.File;
-import com.p4r1nc3.vlxtr.allegro.ApiClient;
 import com.p4r1nc3.vlxtr.allegro.api.OffersApi;
 import com.p4r1nc3.vlxtr.allegro.model.OfferDetailsResponse;
 import com.p4r1nc3.vlxtr.allegro.model.OfferListItem;
@@ -10,6 +9,7 @@ import com.p4r1nc3.vlxtr.allegro.model.OffersListResponse;
 import com.vlxtrcore.exception.ApiException;
 import com.vlxtrcore.model.Product;
 import com.vlxtrcore.repository.ProductRepository;
+import com.vlxtrcore.service.factory.AllegroApiClientFactory;
 import com.vlxtrcore.validators.ProductValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,20 +23,16 @@ public class ProductService {
     private final GoogleDriveService googleDriveService;
     private final ProductRepository productRepository;
     private final ProductValidator productValidator;
-
+    private final AllegroApiClientFactory allegroApiClientFactory;
 
     public ProductService(GoogleDriveService googleDriveService,
                           ProductRepository productRepository,
-                          ProductValidator productValidator) {
+                          ProductValidator productValidator,
+                          AllegroApiClientFactory allegroApiClientFactory) {
         this.googleDriveService = googleDriveService;
         this.productRepository = productRepository;
         this.productValidator = productValidator;
-    }
-
-    private OffersApi createAuthenticatedOffersApi(String bearerToken) {
-        ApiClient apiClient = new ApiClient();
-        apiClient.setBearerToken(bearerToken);
-        return new OffersApi(apiClient);
+        this.allegroApiClientFactory = allegroApiClientFactory;
     }
 
     public List<Product> getProducts() {
@@ -51,16 +47,15 @@ public class ProductService {
                 "Verify the Allegro Offer ID and try again."));
     }
 
-    public List<Product> populateProducts(String bearerToken) {
+    public List<Product> populateProducts() {
         try {
-            OffersApi offersApi = createAuthenticatedOffersApi(bearerToken);
-
+            OffersApi offersApi = allegroApiClientFactory.createOffersApi();
             OffersListResponse offersListResponse = offersApi.getOffers();
             List<File> googleFiles = googleDriveService.fetchGoogleDriveFiles();
 
             return offersListResponse.getOffers()
                     .stream()
-                    .map(offer -> processOffer(offer, googleFiles, bearerToken))
+                    .map(offer -> processOffer(offer, googleFiles))
                     .map(productRepository::save)
                     .toList();
         } catch (Exception e) {
@@ -71,9 +66,9 @@ public class ProductService {
         }
     }
 
-    private Product processOffer(OfferListItem offer, List<File> googleFiles, String bearerToken) {
+    private Product processOffer(OfferListItem offer, List<File> googleFiles) {
         try {
-            OffersApi offersApi = createAuthenticatedOffersApi(bearerToken);
+            OffersApi offersApi = allegroApiClientFactory.createOffersApi();
             OfferDetailsResponse fullOffer = offersApi.getOfferById(offer.getId());
 
             String productModel = extractProductModel(fullOffer);
