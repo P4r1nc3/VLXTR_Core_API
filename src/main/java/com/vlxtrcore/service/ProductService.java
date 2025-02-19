@@ -1,12 +1,12 @@
 package com.vlxtrcore.service;
 
 import com.google.api.services.drive.model.File;
+import com.p4r1nc3.vlxtr.allegro.ApiClient;
 import com.p4r1nc3.vlxtr.allegro.api.OffersApi;
 import com.p4r1nc3.vlxtr.allegro.model.OfferDetailsResponse;
 import com.p4r1nc3.vlxtr.allegro.model.OfferListItem;
 import com.p4r1nc3.vlxtr.allegro.model.OfferProductSetItem;
 import com.p4r1nc3.vlxtr.allegro.model.OffersListResponse;
-import com.vlxtrcore.dto.ErrorResponse;
 import com.vlxtrcore.exception.ApiException;
 import com.vlxtrcore.model.Product;
 import com.vlxtrcore.repository.ProductRepository;
@@ -23,7 +23,7 @@ public class ProductService {
     private final GoogleDriveService googleDriveService;
     private final ProductRepository productRepository;
     private final ProductValidator productValidator;
-    private final OffersApi offersApi;
+
 
     public ProductService(GoogleDriveService googleDriveService,
                           ProductRepository productRepository,
@@ -31,7 +31,12 @@ public class ProductService {
         this.googleDriveService = googleDriveService;
         this.productRepository = productRepository;
         this.productValidator = productValidator;
-        this.offersApi = new OffersApi();
+    }
+
+    private OffersApi createAuthenticatedOffersApi(String bearerToken) {
+        ApiClient apiClient = new ApiClient();
+        apiClient.setBearerToken(bearerToken);
+        return new OffersApi(apiClient);
     }
 
     public List<Product> getProducts() {
@@ -46,17 +51,18 @@ public class ProductService {
                 "Verify the Allegro Offer ID and try again."));
     }
 
-    public List<Product> populateProducts() {
+    public List<Product> populateProducts(String bearerToken) {
         try {
+            OffersApi offersApi = createAuthenticatedOffersApi(bearerToken);
+
             OffersListResponse offersListResponse = offersApi.getOffers();
             List<File> googleFiles = googleDriveService.fetchGoogleDriveFiles();
 
             return offersListResponse.getOffers()
                     .stream()
-                    .map(offer -> processOffer(offer, googleFiles))
+                    .map(offer -> processOffer(offer, googleFiles, bearerToken))
                     .map(productRepository::save)
                     .toList();
-
         } catch (Exception e) {
             throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Failed to populate products",
@@ -65,16 +71,17 @@ public class ProductService {
         }
     }
 
-    private Product processOffer(OfferListItem offer, List<File> googleFiles) {
+    private Product processOffer(OfferListItem offer, List<File> googleFiles, String bearerToken) {
         try {
+            OffersApi offersApi = createAuthenticatedOffersApi(bearerToken);
             OfferDetailsResponse fullOffer = offersApi.getOfferById(offer.getId());
+
             String productModel = extractProductModel(fullOffer);
             String productColour = extractProductColour(productModel);
             String googleDriveId = findGoogleDriveId(googleFiles, productModel);
             String googleDriveLink = "https://drive.google.com/file/d/" + googleDriveId + "/view";
 
             return buildProductEntity(fullOffer, productModel, productColour, googleDriveId, googleDriveLink);
-
         } catch (Exception e) {
             throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Failed to process offer",
@@ -104,7 +111,6 @@ public class ProductService {
         }
         return "UNKNOWN_COLOUR";
     }
-
 
     private String findGoogleDriveId(List<File> googleFiles, String productModel) {
         return googleFiles.stream()
