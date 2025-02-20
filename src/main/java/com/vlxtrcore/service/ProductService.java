@@ -11,6 +11,7 @@ import com.vlxtrcore.model.Product;
 import com.vlxtrcore.repository.ProductRepository;
 import com.vlxtrcore.service.factory.AllegroApiClientFactory;
 import com.vlxtrcore.validators.ProductValidator;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -47,42 +48,30 @@ public class ProductService {
                 "Verify the Allegro Offer ID and try again."));
     }
 
+    @SneakyThrows
     public List<Product> populateProducts() {
-        try {
-            OffersApi offersApi = allegroApiClientFactory.createOffersApi();
-            OffersListResponse offersListResponse = offersApi.getOffers();
-            List<File> googleFiles = googleDriveService.fetchGoogleDriveFiles();
+        OffersApi offersApi = allegroApiClientFactory.createOffersApi();
+        OffersListResponse offersListResponse = offersApi.getOffers();
+        List<File> googleFiles = googleDriveService.fetchGoogleDriveFiles();
 
-            return offersListResponse.getOffers()
-                    .stream()
-                    .map(offer -> processOffer(offer, googleFiles))
-                    .map(productRepository::save)
-                    .toList();
-        } catch (Exception e) {
-            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Failed to populate products",
-                    e.getMessage(),
-                    "Check API connectivity and try again.");
-        }
+        return offersListResponse.getOffers()
+                .stream()
+                .map(offer -> processOffer(offer, googleFiles))
+                .map(productRepository::save)
+                .toList();
     }
 
+    @SneakyThrows
     private Product processOffer(OfferListItem offer, List<File> googleFiles) {
-        try {
-            OffersApi offersApi = allegroApiClientFactory.createOffersApi();
-            OfferDetailsResponse fullOffer = offersApi.getOfferById(offer.getId());
+        OffersApi offersApi = allegroApiClientFactory.createOffersApi();
+        OfferDetailsResponse fullOffer = offersApi.getOfferById(offer.getId());
 
-            String productModel = extractProductModel(fullOffer);
-            String productColour = extractProductColour(productModel);
-            String googleDriveId = findGoogleDriveId(googleFiles, productModel);
-            String googleDriveLink = "https://drive.google.com/file/d/" + googleDriveId + "/view";
+        String productModel = extractProductModel(fullOffer);
+        String productColour = extractProductColour(productModel);
+        String googleDriveId = findGoogleDriveId(googleFiles, productModel);
+        String googleDriveLink = "https://drive.google.com/file/d/" + googleDriveId + "/view";
 
-            return buildProductEntity(fullOffer, productModel, productColour, googleDriveId, googleDriveLink);
-        } catch (Exception e) {
-            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Failed to process offer",
-                    e.getMessage(),
-                    "Check offer details and try again.");
-        }
+        return buildProductEntity(fullOffer, productModel, productColour, googleDriveId, googleDriveLink);
     }
 
     private String extractProductModel(OfferDetailsResponse fullOffer) {
