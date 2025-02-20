@@ -48,30 +48,42 @@ public class ProductService {
                 "Verify the Allegro Offer ID and try again."));
     }
 
-    @SneakyThrows
     public List<Product> populateProducts() {
-        OffersApi offersApi = allegroApiClientFactory.createOffersApi();
-        OffersListResponse offersListResponse = offersApi.getOffers();
-        List<File> googleFiles = googleDriveService.fetchGoogleDriveFiles();
+        try {
+            OffersApi offersApi = allegroApiClientFactory.createOffersApi();
+            OffersListResponse offersListResponse = offersApi.getOffers();
+            List<File> googleFiles = googleDriveService.fetchGoogleDriveFiles();
 
-        return offersListResponse.getOffers()
-                .stream()
-                .map(offer -> processOffer(offer, googleFiles))
-                .map(productRepository::save)
-                .toList();
+            return offersListResponse.getOffers()
+                    .stream()
+                    .map(offer -> processOffer(offer, googleFiles))
+                    .map(productRepository::save)
+                    .toList();
+        } catch (Exception e) {
+            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Failed to populate products",
+                    e.getMessage(),
+                    "Check API connectivity and try again.");
+        }
     }
 
-    @SneakyThrows
     private Product processOffer(OfferListItem offer, List<File> googleFiles) {
-        OffersApi offersApi = allegroApiClientFactory.createOffersApi();
-        OfferDetailsResponse fullOffer = offersApi.getOfferById(offer.getId());
+        try {
+            OffersApi offersApi = allegroApiClientFactory.createOffersApi();
+            OfferDetailsResponse fullOffer = offersApi.getOfferById(offer.getId());
 
-        String productModel = extractProductModel(fullOffer);
-        String productColour = extractProductColour(productModel);
-        String googleDriveId = findGoogleDriveId(googleFiles, productModel);
-        String googleDriveLink = "https://drive.google.com/file/d/" + googleDriveId + "/view";
+            String productModel = extractProductModel(fullOffer);
+            String productColour = extractProductColour(productModel);
+            String googleDriveId = findGoogleDriveId(googleFiles, productModel);
+            String googleDriveLink = "https://drive.google.com/file/d/" + googleDriveId + "/view";
 
-        return buildProductEntity(fullOffer, productModel, productColour, googleDriveId, googleDriveLink);
+            return buildProductEntity(fullOffer, productModel, productColour, googleDriveId, googleDriveLink);
+        } catch (Exception e) {
+            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Failed to process offer",
+                    e.getMessage(),
+                    "Check offer details and try again.");
+        }
     }
 
     private String extractProductModel(OfferDetailsResponse fullOffer) {
