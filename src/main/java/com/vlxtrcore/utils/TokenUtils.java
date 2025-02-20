@@ -1,13 +1,13 @@
-package com.vlxtrcore.service.factory;
+package com.vlxtrcore.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthService {
+public class TokenUtils {
     private final HttpServletRequest request;
 
-    public AuthService(HttpServletRequest request) {
+    public TokenUtils(HttpServletRequest request) {
         this.request = request;
     }
 
