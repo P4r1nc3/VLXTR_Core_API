@@ -24,14 +24,13 @@ public class ProductController {
 
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductByAllegroOfferId(@PathVariable String productId) {
-        System.out.println("test");
         Product product = productService.getProductByAllegroOfferId(productId);
         return ResponseEntity.ok(product);
     }
 
     @GetMapping("/populate")
-    public ResponseEntity<List<Product>> populateProducts(@RequestHeader("Authorization") String bearerToken) {
-        List<Product> products = productService.populateProducts(bearerToken);
+    public ResponseEntity<List<Product>> populateProducts() {
+        List<Product> products = productService.populateProducts();
         return ResponseEntity.ok(products);
     }
 }
