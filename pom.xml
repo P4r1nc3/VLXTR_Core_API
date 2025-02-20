@@ -83,7 +83,7 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- Google API Dependencies -->
+		<!-- Google API -->
 		<dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-drive</artifactId>
@@ -105,7 +105,7 @@
 			<version>1.42.3</version>
 		</dependency>
 
-		<!-- External Project Dependencies -->
+		<!-- VLXTR API Clients -->
 		<dependency>
 			<groupId>com.p4r1nc3.vlxtr</groupId>
 			<artifactId>vlxtr-allegro-api</artifactId>
