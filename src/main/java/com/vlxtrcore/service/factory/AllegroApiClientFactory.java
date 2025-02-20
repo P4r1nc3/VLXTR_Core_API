@@ -2,7 +2,6 @@ package com.vlxtrcore.service.factory;
 
 import com.p4r1nc3.vlxtr.allegro.ApiClient;
 import com.p4r1nc3.vlxtr.allegro.api.OffersApi;
-import com.vlxtrcore.service.AuthService;
 import org.springframework.stereotype.Component;
 
 @Component

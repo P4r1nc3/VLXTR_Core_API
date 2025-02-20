@@ -1,4 +1,4 @@
-package com.vlxtrcore.service;
+package com.vlxtrcore.service.factory;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
