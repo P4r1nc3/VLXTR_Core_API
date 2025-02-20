@@ -6,7 +6,7 @@ import com.p4r1nc3.vlxtr.allegro.model.OfferDetailsResponse;
 import com.p4r1nc3.vlxtr.allegro.model.OfferListItem;
 import com.p4r1nc3.vlxtr.allegro.model.OfferProductSetItem;
 import com.p4r1nc3.vlxtr.allegro.model.OffersListResponse;
-import com.vlxtrcore.exception.ApiException;
+import com.vlxtrcore.exception.VlxtrApiException;
 import com.vlxtrcore.model.Product;
 import com.vlxtrcore.repository.ProductRepository;
 import com.vlxtrcore.service.factory.AllegroApiClientFactory;
@@ -49,7 +49,7 @@ public class ProductService {
         Optional<Product> product = productRepository.findByAllegroOfferId(allegroOfferId);
         return product.orElseThrow(() -> {
             logger.warn("Product not found for Allegro Offer ID: {}", allegroOfferId);
-            return new ApiException(HttpStatus.NOT_FOUND,
+            return new VlxtrApiException(HttpStatus.NOT_FOUND,
                     "Product not found",
                     "Product with allegroOfferId: " + allegroOfferId + " not found",
                     "Verify the Allegro Offer ID and try again.");
@@ -72,7 +72,7 @@ public class ProductService {
                     .toList();
         } catch (Exception e) {
             logger.error("Error while populating products: {}", e.getMessage(), e);
-            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
+            throw new VlxtrApiException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Failed to populate products",
                     e.getMessage(),
                     "Check API connectivity and try again.");
@@ -96,7 +96,7 @@ public class ProductService {
             return product;
         } catch (Exception e) {
             logger.error("Failed to process offer ID: {}. Error: {}", offer.getId(), e.getMessage(), e);
-            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
+            throw new VlxtrApiException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Failed to process offer",
                     e.getMessage(),
                     "Check offer details and try again.");

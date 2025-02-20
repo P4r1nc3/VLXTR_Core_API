@@ -16,8 +16,8 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ErrorResponse> handleApiException(ApiException ex) {
+    @ExceptionHandler(VlxtrApiException.class)
+    public ResponseEntity<ErrorResponse> handleApiException(VlxtrApiException ex) {
         logger.error("Caught ApiException exception: {}", ex.getMessage(), ex);
 
         ErrorResponse errorResponse = new ErrorResponse(

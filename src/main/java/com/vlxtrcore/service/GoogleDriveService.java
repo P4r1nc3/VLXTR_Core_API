@@ -3,7 +3,7 @@ package com.vlxtrcore.service;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
-import com.vlxtrcore.exception.ApiException;
+import com.vlxtrcore.exception.VlxtrApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -38,7 +38,7 @@ public class GoogleDriveService {
             return files;
         } catch (Exception e) {
             logger.error("Error fetching files from Google Drive: {}", e.getMessage(), e);
-            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
+            throw new VlxtrApiException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Google Drive Fetch Error",
                     e.getMessage(),
                     "Verify Google Drive API credentials and permissions.");
