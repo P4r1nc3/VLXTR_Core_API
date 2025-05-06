@@ -22,8 +22,8 @@ MYSQL_ROOT_PASSWORD="admin12345"
 DATABASE_NAME="vlxtr-core"
 MYSQL_PORT=3306
 
-echo "=== Updating system ==="
-sudo dnf update -y
+#echo "=== Updating system ==="
+#sudo dnf update -y
 
 echo "=== Installing MariaDB (MySQL-compatible) ==="
 sudo dnf install -y mariadb105-server

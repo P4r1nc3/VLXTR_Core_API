@@ -7,7 +7,7 @@ on:
 
 env:
   APP_NAME: vlxtr-core
-  EC2_HOST: 3.74.159.2
+  EC2_HOST: 54.93.165.149
   EC2_USER: ec2-user
   GOOGLE_CREDENTIALS_FILE_NAME: allegro-service-account.json
 
@@ -134,9 +134,10 @@ jobs:
           [Service]
           User=${{ env.EC2_USER }}
           WorkingDirectory=/home/${{ env.EC2_USER }}
-          ExecStart=/usr/bin/java -jar /home/${{ env.EC2_USER }}/$APP_NAME.jar
+          ExecStart=/usr/bin/java -Xms64m -Xmx256m -jar /home/${{ env.EC2_USER }}/$APP_NAME.jar
           EnvironmentFile=/home/${{ env.EC2_USER }}/.env.$APP_NAME
           Restart=always
+          SuccessExitStatus=143
 
           [Install]
           WantedBy=multi-user.target
