@@ -44,6 +44,11 @@ jobs:
           </settings>
           EOL
 
+      - name: Add Google credentials to resources
+        run: |
+          mkdir -p src/main/resources
+          echo '${{ secrets.GOOGLE_CREDENTIALS_JSON }}' > src/main/resources/${{ env.GOOGLE_CREDENTIALS_FILE_NAME }}
+
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
