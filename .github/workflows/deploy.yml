@@ -58,6 +58,13 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: jdbc:mysql://localhost:3306/vlxtr-core
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: test
+      GOOGLE_CREDENTIALS_FILE_NAME: dummy.json
+      GOOGLE_FOLDER_ID: dummy
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -68,6 +75,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+
+      - name: Create dummy credentials file
+        run: echo '{}' > src/main/resources/dummy.json
 
       - name: Run tests
         run: mvn test
