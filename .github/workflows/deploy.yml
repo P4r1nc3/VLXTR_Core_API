@@ -1,0 +1,116 @@
+name: Deploy VLXTR Core to EC2
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  APP_NAME: vlxtr-core
+  EC2_HOST: 3.74.159.2
+  EC2_USER: ec2-user
+  GOOGLE_CREDENTIALS_FILE_NAME: allegro-service-account.json
+
+jobs:
+  build:
+    name: Build VLXTR Core
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: application
+          path: target/*.jar
+
+  deploy:
+    name: Deploy to EC2
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: application
+
+      - name: List files
+        run: ls -la
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ env.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Stop existing service
+        run: |
+          ssh ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "sudo systemctl stop $APP_NAME || true"
+
+      - name: Deploy JAR file
+        run: |
+          JAR_FILE=$(find . -name "*.jar" -type f | head -n 1)
+          echo "Deploying $JAR_FILE to EC2"
+          scp "$JAR_FILE" ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:/home/${{ env.EC2_USER }}/$APP_NAME.jar
+
+      - name: Upload Google credentials JSON
+        run: |
+          echo '${{ secrets.GOOGLE_CREDENTIALS_JSON }}' > credentials.json
+          awk '{gsub(/\\n/, "\n")}1' credentials.json > formatted.json
+          scp formatted.json ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:/home/${{ env.EC2_USER }}/$GOOGLE_CREDENTIALS_FILE_NAME
+          rm credentials.json formatted.json
+
+      - name: Create .env on EC2
+        run: |
+          ssh ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "cat > /home/${{ env.EC2_USER }}/.env.$APP_NAME << EOL
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
+          GOOGLE_CREDENTIALS_FILE_NAME=$GOOGLE_CREDENTIALS_FILE_NAME
+          GOOGLE_FOLDER_ID=${{ secrets.GOOGLE_FOLDER_ID }}
+          EOL"
+
+          ssh ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "chmod 600 /home/${{ env.EC2_USER }}/.env.$APP_NAME"
+
+      - name: Configure systemd service
+        run: |
+          ssh ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "cat > /tmp/$APP_NAME.service << EOL
+          [Unit]
+          Description=VLXTR Core Service
+          After=network.target
+
+          [Service]
+          User=${{ env.EC2_USER }}
+          WorkingDirectory=/home/${{ env.EC2_USER }}
+          ExecStart=/usr/bin/java -jar /home/${{ env.EC2_USER }}/$APP_NAME.jar
+          EnvironmentFile=/home/${{ env.EC2_USER }}/.env.$APP_NAME
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+          EOL"
+
+          ssh ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "sudo mv /tmp/$APP_NAME.service /etc/systemd/system/"
+          ssh ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "sudo systemctl daemon-reload"
+
+      - name: Start service
+        run: |
+          ssh ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "sudo systemctl enable $APP_NAME"
+          ssh ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "sudo systemctl start $APP_NAME"
+
+      - name: Cleanup SSH
+        run: rm -f ~/.ssh/id_rsa
