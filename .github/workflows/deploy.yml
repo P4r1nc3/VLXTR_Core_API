@@ -111,12 +111,11 @@ jobs:
           echo "Deploying $JAR_FILE to EC2"
           scp "$JAR_FILE" ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:/home/${{ env.EC2_USER }}/$APP_NAME.jar
 
-      - name: Upload Google credentials JSON
+      - name: Upload Google credentials JSON (Base64-decoded)
         run: |
-          echo '${{ secrets.GOOGLE_CREDENTIALS_JSON }}' > credentials.json
-          awk '{gsub(/\\n/, "\n")}1' credentials.json > formatted.json
-          scp formatted.json ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:/home/${{ env.EC2_USER }}/$GOOGLE_CREDENTIALS_FILE_NAME
-          rm credentials.json formatted.json
+          echo "${{ secrets.GOOGLE_CREDENTIALS_JSON }}" | base64 --decode > $GOOGLE_CREDENTIALS_FILE_NAME
+          scp $GOOGLE_CREDENTIALS_FILE_NAME ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:/home/${{ env.EC2_USER }}/$GOOGLE_CREDENTIALS_FILE_NAME
+          rm $GOOGLE_CREDENTIALS_FILE_NAME
 
       - name: Create .env on EC2
         run: |
