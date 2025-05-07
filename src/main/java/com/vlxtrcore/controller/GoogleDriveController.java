@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -26,7 +25,7 @@ public class GoogleDriveController {
     }
 
     @GetMapping("/files")
-    public ResponseEntity<List<File>> listFolderContents() throws IOException {
+    public ResponseEntity<List<File>> listFolderContents() {
         List<File> files = googleDriveService.fetchGoogleDriveFiles();
         return ResponseEntity.ok(files);
     }
