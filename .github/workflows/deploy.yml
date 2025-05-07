@@ -38,7 +38,7 @@ jobs:
               <server>
                 <id>github</id>
                 <username>${{ github.actor }}</username>
-                <password>${{ secrets.MAVEN_REPO_TOKEN }}</password>
+                <password>${{ github.token }}</password>
               </server>
             </servers>
           </settings>
